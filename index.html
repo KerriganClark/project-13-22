@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 13:22 Master Planner</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#11182d;--panel-2:#151f38;--panel-3:#1c2847;--text:#edf2ff;--muted:#9fb0d9;--line:rgba(255,255,255,.08);
+      --gold:#d4b06a;--green:#34d399;--amber:#f59e0b;--red:#f87171;--blue:#60a5fa;--shadow:0 12px 40px rgba(0,0,0,.28);--radius:22px;--radius-sm:14px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:var(--font);background:radial-gradient(circle at top right, rgba(96,165,250,.12), transparent 22%),radial-gradient(circle at top left, rgba(212,176,106,.12), transparent 20%),linear-gradient(180deg,#08101f 0%, #0c1120 100%);color:var(--text)}
+    .app{max-width:1500px;margin:0 auto;padding:24px 20px 60px}.hero{display:grid;grid-template-columns:1.3fr .8fr;gap:18px;margin-bottom:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter: blur(10px)}
+    .hero-main{padding:28px 28px 24px;position:relative;overflow:hidden}.hero-main:before{content:"";position:absolute;inset:auto -60px -80px auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(212,176,106,.18), transparent 65%)}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.03)}
+    h1{font-size:42px;line-height:1.05;margin:16px 0 12px}.subtitle{font-size:17px;line-height:1.7;color:var(--muted);max-width:90%}.hero-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
+    .mini{padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid var(--line)} .mini h3{margin:0 0 10px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.value{font-size:28px;font-weight:700}
+    .hero-side{padding:22px}.family-list,.values-list,.notes-list,.check-list{display:grid;gap:10px;padding:0;margin:0;list-style:none}.pill-row{display:flex;flex-wrap:wrap;gap:8px}.pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:#dfe8ff;font-size:13px}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:18px 0}.toolbar-left,.toolbar-right{display:flex;flex-wrap:wrap;gap:10px;align-items:center} button,.button,input,select,textarea{font:inherit}
+    button,.button{background:linear-gradient(180deg,#1d2d52,#162340);color:var(--text);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:11px 14px;cursor:pointer;transition:.18s ease;box-shadow:none}
+    button:hover,.button:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)} button.primary{background:linear-gradient(180deg,#c8a158,#9f7a35);color:#17120b}
+    .status-indicator{font-size:13px;color:var(--muted);padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03)} .search{min-width:260px;background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:14px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}.tab{background:rgba(255,255,255,.03);color:var(--muted)} .tab.active{background:linear-gradient(180deg,#23355e,#182541);color:var(--text);border-color:rgba(255,255,255,.16)}
+    .view{display:none}.view.active{display:block}.kpi-grid,.dashboard-grid,.land-grid,.budget-grid,.ownership-grid,.notes-grid{display:grid;gap:16px}.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
+    .kpi{padding:20px}.kpi .label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.kpi .number{font-size:34px;font-weight:800}.kpi .sub{font-size:13px;color:var(--muted);margin-top:6px}
+    .dashboard-grid{grid-template-columns:1.3fr .9fr}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.panel-head h2,.panel-head h3{margin:0;font-size:20px}.section{padding:20px}
+    .progress-ring-wrap{display:flex;gap:18px;align-items:center}.ring{width:126px;height:126px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--pct) * 1%), rgba(255,255,255,.08) 0);display:grid;place-items:center;position:relative}
+    .ring:before{content:"";position:absolute;inset:12px;background:#0d1527;border-radius:50%;border:1px solid var(--line)} .ring span{position:relative;font-size:28px;font-weight:800}
+    .task-list{display:grid;gap:10px}.task-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}
+    .dot{width:12px;height:12px;border-radius:50%}.dot.complete{background:var(--green)} .dot.progress{background:var(--amber)} .dot.hold{background:var(--red)} .dot.todo{background:var(--blue)} .muted{color:var(--muted)} .small{font-size:13px}
+    .phase-card{padding:18px;margin-bottom:16px}.phase-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.phase-stats{display:flex;gap:8px;flex-wrap:wrap}.badge{padding:6px 10px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#dde7ff}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px} table{width:100%;border-collapse:collapse;min-width:1000px} th,td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+    th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.03);position:sticky;top:0;z-index:1} tr:hover td{background:rgba(255,255,255,.025)} td.editable{cursor:text}
+    td.editable:focus, .edit-box:focus,[contenteditable="true"]:focus{outline:2px solid rgba(96,165,250,.35);outline-offset:-2px;background:rgba(255,255,255,.06)} .progress-bar{height:10px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#f0cf8e)} .timeline-bar{position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;min-width:180px} .timeline-range{position:absolute;height:100%;border-radius:999px;background:linear-gradient(90deg,#60a5fa,#34d399)}
+    .land-grid{grid-template-columns:1fr .95fr}.parcel-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);display:grid;gap:10px}.parcel-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.score{font-size:28px;font-weight:800;color:var(--gold)}
+    .req-grid{display:grid;gap:10px}.req-item{padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}.budget-grid{grid-template-columns:1fr .9fr}.budget-box{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}
+    .budget-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.08)}.budget-line:last-child{border-bottom:none}.ownership-grid{grid-template-columns:1.05fr .95fr}.stack{display:grid;gap:14px}
+    .edit-box{width:100%;min-height:110px;background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:14px;resize:vertical}.note-pill{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .list-editor li{display:flex;gap:8px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,.08)}.list-editor li:last-child{border-bottom:none}.list-editor [contenteditable="true"]{flex:1;min-width:0;padding:4px 6px;border-radius:8px}
+    .subtle{font-size:12px;color:var(--muted)} .footer-note{margin-top:18px;color:var(--muted);font-size:13px}.empty{padding:22px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}.danger{background:linear-gradient(180deg,#552024,#421418)} .ghost{background:rgba(255,255,255,.03)}
+    .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sr{position:absolute;left:-9999px}
+    @media (max-width:1100px){.hero,.dashboard-grid,.land-grid,.budget-grid,.ownership-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:720px){.kpi-grid{grid-template-columns:1fr} h1{font-size:34px}.hero-grid,.two-col{grid-template-columns:1fr}.app{padding:16px 14px 42px}.search{min-width:0;width:100%}}
+  </style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<input type="file" id="importFile" class="sr" accept="application/json" />
+<script>
+const SEED_DATA = {"project": {"name": "Project 13:22", "verse": "Proverbs 13:22", "vision": "Create a wooded homestead in Cannon County where two families can live with privacy, raise children close to nature, practice hospitality, glorify God, and build a legacy property our children can inherit.", "members": [{"name": "Kerrigan Clark", "household": "Clark"}, {"name": "Kalee Clark", "household": "Clark"}, {"name": "Indya Pritchard", "household": "Pritchard"}, {"name": "Parker Pritchard", "household": "Pritchard"}], "sharedValues": ["Faith-centered home life", "Hospitality and hosting others", "Kids free to explore nature", "Privacy between households", "Stewardship of the land", "Long-term generational ownership"]}, "phases": [{"name": "Week 1 \u2014 Vision & Criteria", "tasks": [{"status": "Complete", "priority": "Low", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on Project Name", "assignee": "", "description": "", "percentDone": 100, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "Low", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on Google Sheet Structure", "assignee": "", "description": "", "percentDone": 50, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "Medium", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on ownership structure", "assignee": "", "description": "Plan A/1 Preferred = Seller subdivides prior to selling each couple their own tract", "percentDone": 22, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "High", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on land requirements (other tab)", "assignee": "", "description": "3 acres / couple", "percentDone": 11, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "In Progress", "priority": "Medium", "startDate": "2026-03-16", "endDate": "", "taskName": "Schedule meeting with Staria", "assignee": "Kerrigan", "description": "Coordinate with Staria for Week 2 to involve her.", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}]}, {"name": "Week 2  \u2014 Financing & Purchase Readiness", "tasks": [{"status": "On Hold", "priority": "High", "startDate": "2026-03-23", "endDate": "", "taskName": "Review Land Budget", "assignee": "", "description": "(see other tab)", "percentDone": 11, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Low", "startDate": "2026-03-23", "endDate": "", "taskName": "Get Land Loan Pre-Approval", "assignee": "", "description": "Talk to lenders that specialize in rural land loans.", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Confirm Purchase Strategy with Lenders", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Estimate Up-Front Costs", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Confirm Subdivision Feasibility", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}]}, {"name": "Week 3-6  \u2014 Land Search", "tasks": []}], "requirements": [{"category": "Location", "requirement": "Cannon County / Bedford ", "notes": "Within 28 minutes of Murfreesboro\nWithin 40 minutes of Shrocks"}, {"category": "Acreage", "requirement": "3 acres per household", "notes": "Wooded"}, {"category": "Septic", "requirement": "1 perk site per tract", "notes": "Required"}, {"category": "Terrain", "requirement": "Buildable sites", "notes": "Not flood zone, flat zone for homes"}, {"category": "Utilities", "requirement": "Electric available", "notes": "Internet possible"}, {"category": "Access", "requirement": "Legal road frontage or easement", "notes": "Something to ask about"}, {"category": "Privacy", "requirement": "Trees between homes or not", "notes": "Not necessary"}, {"category": "Privacy", "requirement": "Distance between homes", "notes": ".25-.50 acres apart"}], "budgets": {"pritchard": {"land": "80k", "build": "200k"}, "clark": {"land": "75-100k", "build": "300k"}}, "ownershipNotes": ["1\ufe0f\u20e3 Seller Signs a Contract Contingent on Subdivision", "Some sellers are willing to split the land if it helps them make the sale.", "How it usually works:", "Buyer and seller agree on the approximate split.", "A surveyor creates a plat showing the two tracts.", "The county approves the subdivision.", "Each tract is sold separately at closing.", "Pros:", "Each couple owns their parcel from day one", "No shared ownership complications", "2 Perc sites likely to be found", "Cons:", "Takes extra time (often 3\u20138 weeks)", "Many sellers will agree if the buyers pay the survey cost.", "2\ufe0f\u20e3 Seller Signs a Contract Contingent on Subdivision", "This is another common approach.", "The purchase contract might say something like:", "\u201cSale contingent upon successful subdivision creating two buildable tracts with septic approval.\u201d", "Then:", "surveyor divides the land", "county signs off"], "parkingLot": ["Will we have to pay taxes under plan B"], "landParcels": [], "checklists": {"Pre-Purchase": ["Survey", "Perk test / septic feasibility", "Road frontage or easement", "Utility availability", "Flood zone check", "Title review"], "Build Planning": ["House placement", "Driveway layout", "Shared vs separate infrastructure", "Builder shortlist", "Budget validation", "County permits"]}};
+const STORAGE_KEY = "project_13_22_master_app_v1";
+const clone = (obj) => JSON.parse(JSON.stringify(obj));
+let state = loadState();
+let activeView = 'dashboard';
+let searchTerm = '';
+let saveTimer = null;
+function loadState(){try { const saved = localStorage.getItem(STORAGE_KEY); return saved ? JSON.parse(saved) : clone(SEED_DATA);} catch { return clone(SEED_DATA);} }
+function saveState(label = 'Saved'){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));setSaveStatus(label);}
+function setSaveStatus(text){const node = document.querySelector('[data-save-status]');if(node) node.textContent = text;clearTimeout(saveTimer);saveTimer = setTimeout(() => {const later = document.querySelector('[data-save-status]');if(later) later.textContent = 'All changes saved locally';}, 1200);}
+function formatMoney(v){if(v === null || v === undefined || v === '') return '—';const n = Number(String(v).replace(/[^\d.-]/g, ''));if(Number.isNaN(n)) return String(v);return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);}
+function titleCase(v){return String(v || '').replace(/\b\w/g, s => s.toUpperCase());}
+function safe(v){return String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function tasksFlat(){return state.phases.flatMap((phase, phaseIndex) => phase.tasks.map((task, taskIndex) => ({ phaseIndex, taskIndex, phase: phase.name, ...task })));}
+function overallProgress(){const tasks = tasksFlat();if(!tasks.length) return 0;return Math.round(tasks.reduce((sum,t)=>sum + (Number(t.percentDone)||0),0)/tasks.length);}
+function counts(){const tasks = tasksFlat();return {total: tasks.length,complete: tasks.filter(t => String(t.status).toLowerCase() === 'complete').length,progress: tasks.filter(t => String(t.status).toLowerCase() === 'in progress').length,hold: tasks.filter(t => String(t.status).toLowerCase() === 'on hold').length,todo: tasks.filter(t => !['complete','in progress','on hold'].includes(String(t.status).toLowerCase())).length,};}
+function nextMilestone(){const tasks = tasksFlat().filter(t => String(t.status).toLowerCase() !== 'complete' && t.startDate).sort((a,b) => (a.startDate || '').localeCompare(b.startDate || ''));return tasks[0] || null;}
+function daysBetween(a,b){const one = new Date(a), two = new Date(b);return Math.round((two - one)/(1000*60*60*24));}
+function timelineBounds(){const tasks = tasksFlat().filter(t => t.startDate);if(!tasks.length) return null;const starts = tasks.map(t => t.startDate).sort();const ends = tasks.map(t => t.endDate || t.startDate).sort();return { min: starts[0], max: ends[ends.length-1] };}
+function timelineStyle(task){const bounds = timelineBounds();if(!bounds || !task.startDate) return 'width:0';const total = Math.max(1, daysBetween(bounds.min, bounds.max) + 1);const start = Math.max(0, daysBetween(bounds.min, task.startDate));const endDate = task.endDate || task.startDate;const span = Math.max(1, daysBetween(task.startDate, endDate) + 1);const left = (start / total) * 100;const width = (span / total) * 100;return `left:${left}%;width:${Math.max(width,3)}%`;}
+function render(){
+  const app = document.getElementById('app');const stats = counts();const next = nextMilestone();const progress = overallProgress();const landCount = state.landParcels.length;
+  app.innerHTML = `
+    <section class="hero">
+      <div class="hero-main card">
+        <div class="eyebrow">Project Planner • ${safe(state.project.verse)}</div>
+        <h1>${safe(state.project.name)}</h1>
+        <div class="subtitle">${safe(state.project.vision)}</div>
+        <div class="hero-grid">
+          <div class="mini"><h3>Families</h3><div class="pill-row">${state.project.members.map(m => `<span class="pill">${safe(m.name)}</span>`).join('')}</div></div>
+          <div class="mini"><h3>Shared Values</h3><div class="pill-row">${state.project.sharedValues.map(v => `<span class="pill">${safe(v)}</span>`).join('')}</div></div>
+        </div>
+      </div>
+      <aside class="hero-side card">
+        <div class="panel-head"><h2>Command Center</h2><span class="status-indicator" data-save-status>All changes saved locally</span></div>
+        <div class="stack">
+          <div class="mini"><h3>Primary Goal</h3><div class="small">Buy land, divide it wisely, and build two homes with clarity on ownership, budget, timeline, and next decisions.</div></div>
+          <div class="mini"><h3>Next milestone</h3><div class="value" style="font-size:20px">${next ? safe(next.taskName) : 'No open milestone'}</div><div class="small muted">${next ? `${safe(next.phase)} • ${safe(next.startDate || 'No date')}` : 'Add more tasks to keep momentum visible.'}</div></div>
+          <div class="mini"><h3>What this app handles</h3><div class="pill-row"><span class="pill">Timeline</span><span class="pill">Land scoring</span><span class="pill">Budget split</span><span class="pill">Ownership notes</span><span class="pill">Parking lot</span><span class="pill">Checklist tracking</span></div></div>
+        </div>
+      </aside>
+    </section>
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search" placeholder="Search tasks, notes, parcels..." value="${safe(searchTerm)}" data-search />
+        <button class="primary" data-action="add-phase">+ Add Phase</button>
+        <button data-action="add-parcel">+ Add Land Parcel</button>
+        <button data-action="add-parking">+ Add Parking Lot Item</button>
+      </div>
+      <div class="toolbar-right">
+        <button class="ghost" data-action="export-json">Export JSON</button>
+        <button class="ghost" data-action="import-json">Import JSON</button>
+        <button class="danger" data-action="reset-app">Reset to Spreadsheet Seed</button>
+      </div>
+    </div>
+    <div class="tabs">${['dashboard','timeline','land','budget','ownership','notes'].map(v => `<button class="tab ${activeView===v?'active':''}" data-view="${v}">${titleCase(v)}</button>`).join('')}</div>
+    <section class="view ${activeView==='dashboard'?'active':''}" id="view-dashboard">${renderDashboard(progress, stats, next, landCount)}</section>
+    <section class="view ${activeView==='timeline'?'active':''}" id="view-timeline">${renderTimeline()}</section>
+    <section class="view ${activeView==='land'?'active':''}" id="view-land">${renderLand()}</section>
+    <section class="view ${activeView==='budget'?'active':''}" id="view-budget">${renderBudget()}</section>
+    <section class="view ${activeView==='ownership'?'active':''}" id="view-ownership">${renderOwnership()}</section>
+    <section class="view ${activeView==='notes'?'active':''}" id="view-notes">${renderNotes()}</section>
+    <div class="footer-note">Inline edits update the app’s underlying data model and save in your browser automatically. Use Export JSON for a backup or to move the plan to another device.</div>`;
+  bindEvents();
+}
+function renderDashboard(progress, stats, next, landCount){
+  const urgent = tasksFlat().filter(t => ['high'].includes(String(t.priority).toLowerCase()) && String(t.status).toLowerCase() !== 'complete');
+  const visibleUrgent = filterItems(urgent, t => `${t.taskName} ${t.description} ${t.assignee} ${t.phase}`);
+  return `
+    <div class="kpi-grid">
+      <div class="kpi card"><div class="label">Overall progress</div><div class="number">${progress}%</div><div class="sub">Across ${stats.total} tracked tasks</div></div>
+      <div class="kpi card"><div class="label">Open tasks</div><div class="number">${stats.total - stats.complete}</div><div class="sub">${stats.progress} in progress • ${stats.hold} on hold</div></div>
+      <div class="kpi card"><div class="label">Land options</div><div class="number">${landCount}</div><div class="sub">Parcel scorecards you can compare</div></div>
+      <div class="kpi card"><div class="label">Parking lot</div><div class="number">${state.parkingLot.length}</div><div class="sub">Open questions to resolve</div></div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="card section">
+        <div class="panel-head"><h2>Progress Snapshot</h2><span class="badge">Live</span></div>
+        <div class="progress-ring-wrap">
+          <div class="ring" style="--pct:${progress}"><span>${progress}%</span></div>
+          <div class="stack" style="flex:1">
+            <div>
+              <div class="small muted">Completion mix</div>
+              <div class="task-list" style="margin-top:10px">
+                <div class="task-item"><span class="dot complete"></span><div>Complete</div><strong>${stats.complete}</strong></div>
+                <div class="task-item"><span class="dot progress"></span><div>In Progress</div><strong>${stats.progress}</strong></div>
+                <div class="task-item"><span class="dot hold"></span><div>On Hold</div><strong>${stats.hold}</strong></div>
+                <div class="task-item"><span class="dot todo"></span><div>Not Started</div><strong>${stats.todo}</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card section">
+        <div class="panel-head"><h2>Next Up</h2><span class="badge">Milestone</span></div>
+        ${next ? `<div class="task-item"><span class="dot progress"></span><div><div><strong>${safe(next.taskName)}</strong></div><div class="small muted">${safe(next.phase)} • ${safe(next.assignee || 'Unassigned')}</div><div class="small muted">${safe(next.description || 'No description yet')}</div></div><div class="small">${safe(next.startDate || 'TBD')}</div></div>` : `<div class="empty">No upcoming milestone yet.</div>`}
+      </div>
+    </div>
+    <div class="dashboard-grid" style="margin-top:16px">
+      <div class="card section">
+        <div class="panel-head"><h2>Priority Focus</h2><button data-action="jump-view" data-target="timeline">Open timeline</button></div>
+        <div class="task-list">
+          ${visibleUrgent.length ? visibleUrgent.slice(0,6).map((t) => `<div class="task-item"><span class="dot ${statusDot(t.status)}"></span><div><div><strong>${safe(t.taskName)}</strong></div><div class="small muted">${safe(t.phase)} • ${safe(t.assignee || 'Unassigned')}</div></div><div class="badge">${safe(t.priority || 'Medium')}</div></div>`).join('') : `<div class="empty">No high-priority open items match the current filter.</div>`}
+        </div>
+      </div>
+      <div class="card section">
+        <div class="panel-head"><h2>Decision Anchors</h2><button data-action="jump-view" data-target="ownership">Open ownership</button></div>
+        <div class="stack">
+          <div class="note-pill"><strong>Preferred structure:</strong> seller subdivides before closing so each couple buys its own tract.</div>
+          <div class="note-pill"><strong>Land target:</strong> 3 acres per household, wooded, buildable, septic-ready.</div>
+          <div class="note-pill"><strong>Design intent:</strong> privacy between homes, hospitality, long-term family stewardship.</div>
+        </div>
+      </div>
+    </div>`;
+}
+function renderTimeline(){
+  const visiblePhases = filterItems(state.phases, p => `${p.name} ${p.tasks.map(t => `${t.taskName} ${t.description} ${t.assignee}`).join(' ')}`);
+  return visiblePhases.map((phase) => {
+    const originalIndex = state.phases.findIndex(x => x === phase);
+    const phaseProgress = phase.tasks.length ? Math.round(phase.tasks.reduce((sum,t)=>sum+(Number(t.percentDone)||0),0)/phase.tasks.length) : 0;
+    return `<div class="phase-card card"><div class="phase-top"><div><h2 style="margin:0 0 6px">${safe(phase.name)}</h2><div class="phase-stats"><span class="badge">${phase.tasks.length} tasks</span><span class="badge">${phaseProgress}% complete</span></div></div><div class="toolbar-right"><button data-action="add-task" data-phase="${originalIndex}">+ Add Task</button><button class="ghost" data-action="rename-phase" data-phase="${originalIndex}">Rename</button></div></div><div class="table-wrap"><table><thead><tr><th>Status</th><th>Priority</th><th>Task</th><th>Assignee</th><th>Start</th><th>End</th><th>Progress</th><th>Timeline</th><th>Description</th><th></th></tr></thead><tbody>${phase.tasks.map((task, tIdx) => renderTaskRow(task, originalIndex, tIdx)).join('') || `<tr><td colspan="10"><div class="empty">No tasks yet.</div></td></tr>`}</tbody></table></div></div>`;
+  }).join('') || `<div class="empty card section">No phases match the current filter.</div>`;
+}
+function renderTaskRow(task, pIdx, tIdx){return `<tr><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.status">${safe(task.status || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.priority">${safe(task.priority || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.taskName"><strong>${safe(task.taskName || '')}</strong></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.assignee">${safe(task.assignee || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.startDate">${safe(task.startDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.endDate">${safe(task.endDate || '')}</td><td><div class="editable small" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.percentDone">${safe(task.percentDone ?? 0)}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(task.percentDone)||0))}%"></div></div></td><td><div class="timeline-bar"><div class="timeline-range" style="${timelineStyle(task)}"></div></div></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.description">${safe(task.description || '')}</td><td><button data-action="delete-task" data-phase="${pIdx}" data-task="${tIdx}">Delete</button></td></tr>`;}
+function renderLand(){
+  const parcels = filterItems(state.landParcels, p => Object.values(p).join(' '));
+  return `<div class="land-grid"><div class="card section"><div class="panel-head"><h2>Land Comparison Board</h2><button data-action="add-parcel">+ Add Parcel</button></div><div class="stack">${parcels.length ? parcels.map((parcel) => {const originalIndex = state.landParcels.findIndex(x => x === parcel);return `<div class="parcel-card"><div class="parcel-head"><div style="flex:1"><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.name"><strong>${safe(parcel.name || 'Unnamed Parcel')}</strong></div><div class="small muted editable" contenteditable="true" data-bind="landParcels.${originalIndex}.location">${safe(parcel.location || 'County / address')}</div></div><div class="score editable" contenteditable="true" data-bind="landParcels.${originalIndex}.score">${safe(parcel.score || '0')}</div></div><div class="two-col"><div class="note-pill"><div class="subtle">Asking price</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.price">${safe(parcel.price || '')}</div></div><div class="note-pill"><div class="subtle">Acreage</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.acres">${safe(parcel.acres || '')}</div></div><div class="note-pill"><div class="subtle">Utilities</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.utilities">${safe(parcel.utilities || '')}</div></div><div class="note-pill"><div class="subtle">Septic / perk</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.septic">${safe(parcel.septic || '')}</div></div></div><div class="note-pill"><div class="subtle">Notes</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.notes">${safe(parcel.notes || '')}</div></div><div><button data-action="delete-parcel" data-parcel="${originalIndex}">Delete Parcel</button></div></div>`;}).join('') : `<div class="empty">No parcels added yet. Start comparing listings here.</div>`}</div></div><div class="card section"><div class="panel-head"><h2>Requirements</h2><span class="badge">Editable</span></div><div class="req-grid">${state.requirements.map((req, idx) => `<div class="req-item"><div class="small muted editable" contenteditable="true" data-bind="requirements.${idx}.category">${safe(req.category)}</div><div class="editable" contenteditable="true" data-bind="requirements.${idx}.requirement"><strong>${safe(req.requirement)}</strong></div><div class="small muted editable" contenteditable="true" data-bind="requirements.${idx}.notes">${safe(req.notes)}</div></div>`).join('')}</div></div></div>`;
+}
+function renderBudget(){
+  const pr = state.budgets.pritchard || {}; const cl = state.budgets.clark || {}; const totalLand = num(pr.land) + num(cl.land); const totalBuild = num(pr.build) + num(cl.build); const totalTarget = totalLand + totalBuild;
+  return `<div class="budget-grid"><div class="card section"><div class="panel-head"><h2>Family Budget Split</h2><span class="badge">Planning</span></div><div class="two-col"><div class="budget-box"><h3 style="margin-top:0">Pritchard</h3><div class="budget-line"><span>Land Budget</span><strong class="editable" contenteditable="true" data-bind="budgets.pritchard.land">${safe(pr.land || '')}</strong></div><div class="budget-line"><span>Build Budget</span><strong class="editable" contenteditable="true" data-bind="budgets.pritchard.build">${safe(pr.build || '')}</strong></div><div class="budget-line"><span>Total</span><strong>${formatMoney(num(pr.land)+num(pr.build))}</strong></div></div><div class="budget-box"><h3 style="margin-top:0">Clark</h3><div class="budget-line"><span>Land Budget</span><strong class="editable" contenteditable="true" data-bind="budgets.clark.land">${safe(cl.land || '')}</strong></div><div class="budget-line"><span>Build Budget</span><strong class="editable" contenteditable="true" data-bind="budgets.clark.build">${safe(cl.build || '')}</strong></div><div class="budget-line"><span>Total</span><strong>${formatMoney(num(cl.land)+num(cl.build))}</strong></div></div></div></div><div class="card section"><div class="panel-head"><h2>Budget Rollup</h2><span class="badge">Combined</span></div><div class="budget-box"><div class="budget-line"><span>Total Land Target</span><strong>${formatMoney(totalLand)}</strong></div><div class="budget-line"><span>Total Build Target</span><strong>${formatMoney(totalBuild)}</strong></div><div class="budget-line"><span>Combined Project Target</span><strong>${formatMoney(totalTarget)}</strong></div></div><div class="stack" style="margin-top:16px"><div class="note-pill">Add shared infrastructure items here later if needed: driveway, survey, septic engineering, utility extension, fencing, and contingency.</div><div class="note-pill">A simple next step is creating a shared-cost tracker once the first parcel is under serious consideration.</div></div></div></div>`;
+}
+function renderOwnership(){return `<div class="ownership-grid"><div class="card section"><div class="panel-head"><h2>Ownership Structure Notes</h2><span class="badge">Source-derived</span></div><ul class="list-editor" style="list-style:none;padding:0;margin:0">${state.ownershipNotes.map((note, idx) => `<li><span class="subtle">${idx+1}</span><div contenteditable="true" data-bind="ownershipNotes.${idx}">${safe(note)}</div><button data-action="delete-note" data-note-type="ownershipNotes" data-note="${idx}">Delete</button></li>`).join('')}</ul><div style="margin-top:14px"><button data-action="add-note" data-note-type="ownershipNotes">+ Add ownership note</button></div></div><div class="card section"><div class="panel-head"><h2>Build Strategy Prompts</h2><span class="badge">Helpful</span></div><div class="stack"><div class="note-pill"><strong>Access:</strong> Decide early whether the driveway, entrance, and utility trenching are shared or fully separate.</div><div class="note-pill"><strong>Layout:</strong> Sketch ideal home placement, privacy buffers, orientation, drainage, and kid-safe open areas.</div><div class="note-pill"><strong>Legal:</strong> Keep room here for survey notes, easement language, maintenance responsibilities, and any shared-use agreement points.</div><div class="note-pill"><strong>Exit clarity:</strong> Add terms later for what happens if one household wants to sell, refinance, or improve shared infrastructure.</div></div></div></div>`;}
+function renderNotes(){return `<div class="notes-grid"><div class="ownership-grid"><div class="card section"><div class="panel-head"><h2>Parking Lot</h2><button data-action="add-parking">+ Add Item</button></div><ul class="list-editor" style="list-style:none;padding:0;margin:0">${state.parkingLot.map((note, idx) => `<li><span class="subtle">Q${idx+1}</span><div contenteditable="true" data-bind="parkingLot.${idx}">${safe(note)}</div><button data-action="delete-note" data-note-type="parkingLot" data-note="${idx}">Delete</button></li>`).join('')}</ul></div><div class="card section"><div class="panel-head"><h2>Checklists</h2><span class="badge">Editable</span></div><div class="stack">${Object.entries(state.checklists).map(([name,items]) => `<div class="budget-box"><div class="panel-head"><h3>${safe(name)}</h3><button data-action="add-check-item" data-list="${safe(name)}">+ Add</button></div><ul class="list-editor" style="list-style:none;padding:0;margin:0">${items.map((item,idx)=>`<li><span class="subtle">•</span><div contenteditable="true" data-bind="checklists.${name}.${idx}">${safe(item)}</div><button data-action="delete-check-item" data-list="${safe(name)}" data-index="${idx}">Delete</button></li>`).join('')}</ul></div>`).join('')}</div></div></div></div>`;}
+function num(v){if(v === null || v === undefined || v === '') return 0; const n = Number(String(v).replace(/[^\d.-]/g,'')); return Number.isNaN(n) ? 0 : n;}
+function statusDot(status){const s = String(status || '').toLowerCase(); if(s === 'complete') return 'complete'; if(s === 'in progress') return 'progress'; if(s === 'on hold') return 'hold'; return 'todo';}
+function filterItems(items, textFn){if(!searchTerm.trim()) return items; const q = searchTerm.toLowerCase(); return items.filter(item => textFn(item).toLowerCase().includes(q));}
+function setByPath(obj, path, value){const parts = path.split('.'); let current = obj; for(let i=0;i<parts.length-1;i++){current = current[parts[i]];} current[parts[parts.length-1]] = value;}
+function bindEvents(){
+  document.querySelectorAll('[data-view]').forEach(btn => btn.onclick = () => { activeView = btn.dataset.view; render(); });
+  const search = document.querySelector('[data-search]'); if(search){ search.addEventListener('input', e => { searchTerm = e.target.value; render(); }); }
+  document.querySelectorAll('[contenteditable="true"][data-bind]').forEach(node => {
+    node.addEventListener('blur', () => { const val = node.innerText.trim(); setByPath(state, node.dataset.bind, val); saveState('Saved edit'); render(); });
+    node.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.closest('td')){ e.preventDefault(); e.target.blur(); } });
+  });
+  document.querySelectorAll('[data-action]').forEach(btn => btn.onclick = handleAction);
+}
+function handleAction(e){
+  const btn = e.currentTarget; const action = btn.dataset.action;
+  if(action === 'add-phase'){const name = prompt('Phase name?', `Week ${state.phases.length + 1} — New Phase`); if(!name) return; state.phases.push({name, tasks:[]}); saveState('Phase added'); activeView = 'timeline'; render();}
+  if(action === 'rename-phase'){const idx = Number(btn.dataset.phase); const name = prompt('Rename phase', state.phases[idx].name); if(!name) return; state.phases[idx].name = name; saveState('Phase renamed'); render();}
+  if(action === 'add-task'){const phase = Number(btn.dataset.phase); state.phases[phase].tasks.push({status:'Not Started', priority:'Medium', taskName:'New task', assignee:'', startDate:'', endDate:'', percentDone:0, description:''}); saveState('Task added'); render();}
+  if(action === 'delete-task'){const phase = Number(btn.dataset.phase), task = Number(btn.dataset.task); state.phases[phase].tasks.splice(task,1); saveState('Task deleted'); render();}
+  if(action === 'add-parcel'){state.landParcels.push({name:'New parcel', location:'', score:'0', price:'', acres:'', utilities:'', septic:'', notes:''}); saveState('Parcel added'); activeView = 'land'; render();}
+  if(action === 'delete-parcel'){state.landParcels.splice(Number(btn.dataset.parcel),1); saveState('Parcel deleted'); render();}
+  if(action === 'add-parking'){state.parkingLot.push('New question or open decision'); saveState('Parking item added'); activeView = 'notes'; render();}
+  if(action === 'add-note'){const type = btn.dataset.noteType; state[type].push('New note'); saveState('Note added'); render();}
+  if(action === 'delete-note'){const type = btn.dataset.noteType; state[type].splice(Number(btn.dataset.note),1); saveState('Note deleted'); render();}
+  if(action === 'add-check-item'){const list = btn.dataset.list; state.checklists[list].push('New checklist item'); saveState('Checklist item added'); render();}
+  if(action === 'delete-check-item'){const list = btn.dataset.list; state.checklists[list].splice(Number(btn.dataset.index),1); saveState('Checklist item deleted'); render();}
+  if(action === 'jump-view'){activeView = btn.dataset.target; render();}
+  if(action === 'export-json'){const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'project-13-22-data.json'; a.click(); URL.revokeObjectURL(url); setSaveStatus('Exported JSON backup');}
+  if(action === 'import-json'){document.getElementById('importFile').click();}
+  if(action === 'reset-app'){if(!confirm('Reset everything back to the spreadsheet seed data?')) return; state = clone(SEED_DATA); saveState('Reset complete'); render();}
+}
+document.getElementById('importFile').addEventListener('change', async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  try { const text = await file.text(); state = JSON.parse(text); saveState('Imported JSON'); render(); } catch(err){ alert('That JSON file could not be imported.'); }
+  e.target.value = '';
+});
+render();
+</script>
+</body>
+</html>
