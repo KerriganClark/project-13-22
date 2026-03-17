@@ -43,6 +43,12 @@
     .subtle{font-size:12px;color:var(--muted)} .footer-note{margin-top:18px;color:var(--muted);font-size:13px}.empty{padding:22px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}.danger{background:linear-gradient(180deg,#552024,#421418)} .ghost{background:rgba(255,255,255,.03)}
     .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sr{position:absolute;left:-9999px}
     @media (max-width:1100px){.hero,.dashboard-grid,.land-grid,.budget-grid,.ownership-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .sync-pill{padding:8px 12px;border-radius:999px;background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.28);color:#c8f7e2;font-size:12px}
+.sync-panel{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);display:grid;gap:10px;margin-top:12px}
+.sync-grid{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center}
+.sync-input{width:100%;background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:14px}
+@media (max-width:900px){.sync-grid{grid-template-columns:1fr}}
+
     @media (max-width:720px){.kpi-grid{grid-template-columns:1fr} h1{font-size:34px}.hero-grid,.two-col{grid-template-columns:1fr}.app{padding:16px 14px 42px}.search{min-width:0;width:100%}}
   </style>
 </head>
@@ -51,15 +57,53 @@
 <input type="file" id="importFile" class="sr" accept="application/json" />
 <script>
 const SEED_DATA = {"project": {"name": "Project 13:22", "verse": "Proverbs 13:22", "vision": "Create a wooded homestead in Cannon County where two families can live with privacy, raise children close to nature, practice hospitality, glorify God, and build a legacy property our children can inherit.", "members": [{"name": "Kerrigan Clark", "household": "Clark"}, {"name": "Kalee Clark", "household": "Clark"}, {"name": "Indya Pritchard", "household": "Pritchard"}, {"name": "Parker Pritchard", "household": "Pritchard"}], "sharedValues": ["Faith-centered home life", "Hospitality and hosting others", "Kids free to explore nature", "Privacy between households", "Stewardship of the land", "Long-term generational ownership"]}, "phases": [{"name": "Week 1 \u2014 Vision & Criteria", "tasks": [{"status": "Complete", "priority": "Low", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on Project Name", "assignee": "", "description": "", "percentDone": 100, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "Low", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on Google Sheet Structure", "assignee": "", "description": "", "percentDone": 50, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "Medium", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on ownership structure", "assignee": "", "description": "Plan A/1 Preferred = Seller subdivides prior to selling each couple their own tract", "percentDone": 22, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "Complete", "priority": "High", "startDate": "2026-03-16", "endDate": "", "taskName": "Agree on land requirements (other tab)", "assignee": "", "description": "3 acres / couple", "percentDone": 11, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "In Progress", "priority": "Medium", "startDate": "2026-03-16", "endDate": "", "taskName": "Schedule meeting with Staria", "assignee": "Kerrigan", "description": "Coordinate with Staria for Week 2 to involve her.", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}]}, {"name": "Week 2  \u2014 Financing & Purchase Readiness", "tasks": [{"status": "On Hold", "priority": "High", "startDate": "2026-03-23", "endDate": "", "taskName": "Review Land Budget", "assignee": "", "description": "(see other tab)", "percentDone": 11, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Low", "startDate": "2026-03-23", "endDate": "", "taskName": "Get Land Loan Pre-Approval", "assignee": "", "description": "Talk to lenders that specialize in rural land loans.", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Confirm Purchase Strategy with Lenders", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Estimate Up-Front Costs", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}, {"status": "On Hold", "priority": "Medium", "startDate": "2026-03-23", "endDate": "", "taskName": "Confirm Subdivision Feasibility", "assignee": "", "description": "", "percentDone": 0, "fixedCost": "", "estimatedHours": "", "actualHours": ""}]}, {"name": "Week 3-6  \u2014 Land Search", "tasks": []}], "requirements": [{"category": "Location", "requirement": "Cannon County / Bedford ", "notes": "Within 28 minutes of Murfreesboro\nWithin 40 minutes of Shrocks"}, {"category": "Acreage", "requirement": "3 acres per household", "notes": "Wooded"}, {"category": "Septic", "requirement": "1 perk site per tract", "notes": "Required"}, {"category": "Terrain", "requirement": "Buildable sites", "notes": "Not flood zone, flat zone for homes"}, {"category": "Utilities", "requirement": "Electric available", "notes": "Internet possible"}, {"category": "Access", "requirement": "Legal road frontage or easement", "notes": "Something to ask about"}, {"category": "Privacy", "requirement": "Trees between homes or not", "notes": "Not necessary"}, {"category": "Privacy", "requirement": "Distance between homes", "notes": ".25-.50 acres apart"}], "budgets": {"pritchard": {"land": "80k", "build": "200k"}, "clark": {"land": "75-100k", "build": "300k"}}, "ownershipNotes": ["1\ufe0f\u20e3 Seller Signs a Contract Contingent on Subdivision", "Some sellers are willing to split the land if it helps them make the sale.", "How it usually works:", "Buyer and seller agree on the approximate split.", "A surveyor creates a plat showing the two tracts.", "The county approves the subdivision.", "Each tract is sold separately at closing.", "Pros:", "Each couple owns their parcel from day one", "No shared ownership complications", "2 Perc sites likely to be found", "Cons:", "Takes extra time (often 3\u20138 weeks)", "Many sellers will agree if the buyers pay the survey cost.", "2\ufe0f\u20e3 Seller Signs a Contract Contingent on Subdivision", "This is another common approach.", "The purchase contract might say something like:", "\u201cSale contingent upon successful subdivision creating two buildable tracts with septic approval.\u201d", "Then:", "surveyor divides the land", "county signs off"], "parkingLot": ["Will we have to pay taxes under plan B"], "landParcels": [], "checklists": {"Pre-Purchase": ["Survey", "Perk test / septic feasibility", "Road frontage or easement", "Utility availability", "Flood zone check", "Title review"], "Build Planning": ["House placement", "Driveway layout", "Shared vs separate infrastructure", "Builder shortlist", "Budget validation", "County permits"]}};
-const STORAGE_KEY = "project_13_22_master_app_v1";
+const STORAGE_KEY = "project_13_22_master_app_v2";
+const REMOTE_URL_KEY = "project_13_22_remote_url";
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
 let state = loadState();
 let activeView = 'dashboard';
 let searchTerm = '';
 let saveTimer = null;
+let syncMessageTimer = null;
 function loadState(){try { const saved = localStorage.getItem(STORAGE_KEY); return saved ? JSON.parse(saved) : clone(SEED_DATA);} catch { return clone(SEED_DATA);} }
-function saveState(label = 'Saved'){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));setSaveStatus(label);}
-function setSaveStatus(text){const node = document.querySelector('[data-save-status]');if(node) node.textContent = text;clearTimeout(saveTimer);saveTimer = setTimeout(() => {const later = document.querySelector('[data-save-status]');if(later) later.textContent = 'All changes saved locally';}, 1200);}
+function saveState(label = 'Saved locally'){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));setSaveStatus(label);}
+function setSaveStatus(text){const node = document.querySelector('[data-save-status]');if(node) node.textContent = text;clearTimeout(saveTimer);saveTimer = setTimeout(() => {const later = document.querySelector('[data-save-status]');if(later) later.textContent = remoteUrl() ? 'Local copy saved • cloud sync optional' : 'All changes saved locally';}, 1400);}
+function remoteUrl(){return (localStorage.getItem(REMOTE_URL_KEY) || '').trim();}
+function setRemoteUrl(url){localStorage.setItem(REMOTE_URL_KEY, (url || '').trim());}
+function setSyncStatus(text){const node = document.querySelector('[data-sync-status]');if(node) node.textContent = text || (remoteUrl() ? 'Cloud endpoint connected' : 'No cloud endpoint yet');clearTimeout(syncMessageTimer);syncMessageTimer = setTimeout(() => {const later = document.querySelector('[data-sync-status]'); if(later) later.textContent = remoteUrl() ? 'Cloud endpoint connected' : 'No cloud endpoint yet';}, 2200);}
+async function pullFromCloud(){
+  const url = remoteUrl();
+  if(!url){alert('Paste your Google Apps Script web app URL first.'); return;}
+  try{
+    setSyncStatus('Pulling latest cloud copy...');
+    const res = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), {method:'GET'});
+    const payload = await res.json();
+    if(payload && payload.state){ state = payload.state; saveState('Pulled from cloud'); render(); setSyncStatus('Pulled latest cloud copy'); return; }
+    throw new Error('Unexpected response');
+  }catch(err){
+    console.error(err);
+    alert('Could not pull from the cloud endpoint. Make sure the Apps Script deployment URL is correct and the app is deployed for anyone with the link.');
+    setSyncStatus('Cloud pull failed');
+  }
+}
+async function pushToCloud(){
+  const url = remoteUrl();
+  if(!url){alert('Paste your Google Apps Script web app URL first.'); return;}
+  try{
+    setSyncStatus('Pushing current app state to cloud...');
+    await fetch(url, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({state, updatedAt: new Date().toISOString(), source: location.href})
+    });
+    setSyncStatus('Cloud updated');
+    saveState('Saved locally');
+  }catch(err){
+    console.error(err);
+    alert('Could not push to the cloud endpoint. Check the deployment URL and republish the Apps Script web app if needed.');
+    setSyncStatus('Cloud push failed');
+  }
+}
 function formatMoney(v){if(v === null || v === undefined || v === '') return '—';const n = Number(String(v).replace(/[^\d.-]/g, ''));if(Number.isNaN(n)) return String(v);return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);}
 function titleCase(v){return String(v || '').replace(/\b\w/g, s => s.toUpperCase());}
 function safe(v){return String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -100,10 +144,22 @@ function render(){
         <button data-action="add-parking">+ Add Parking Lot Item</button>
       </div>
       <div class="toolbar-right">
+        <button class="ghost" data-action="pull-cloud">Pull Cloud</button>
+        <button class="ghost" data-action="push-cloud">Push Cloud</button>
         <button class="ghost" data-action="export-json">Export JSON</button>
         <button class="ghost" data-action="import-json">Import JSON</button>
         <button class="danger" data-action="reset-app">Reset to Spreadsheet Seed</button>
       </div>
+    </div>
+    <div class="sync-panel card">
+      <div class="panel-head" style="margin-bottom:0"><h3>Cloud Sync</h3><span class="sync-pill" data-sync-status>${'${remoteUrl() ? "Cloud endpoint connected" : "No cloud endpoint yet"}'}</span></div>
+      <div class="sync-grid">
+        <input class="sync-input" placeholder="Paste Google Apps Script web app URL here" value="${'${safe(remoteUrl())}'}" data-remote-url />
+        <button data-action="save-remote-url">Save Endpoint</button>
+        <button data-action="pull-cloud">Pull Cloud</button>
+        <button class="primary" data-action="push-cloud">Push Cloud</button>
+      </div>
+      <div class="subtle">Recommended flow: one person makes changes, then clicks Push Cloud. Before anyone else edits, click Pull Cloud first.</div>
     </div>
     <div class="tabs">${['dashboard','timeline','land','budget','ownership','notes'].map(v => `<button class="tab ${activeView===v?'active':''}" data-view="${v}">${titleCase(v)}</button>`).join('')}</div>
     <section class="view ${activeView==='dashboard'?'active':''}" id="view-dashboard">${renderDashboard(progress, stats, next, landCount)}</section>
@@ -211,6 +267,9 @@ function handleAction(e){
   if(action === 'add-check-item'){const list = btn.dataset.list; state.checklists[list].push('New checklist item'); saveState('Checklist item added'); render();}
   if(action === 'delete-check-item'){const list = btn.dataset.list; state.checklists[list].splice(Number(btn.dataset.index),1); saveState('Checklist item deleted'); render();}
   if(action === 'jump-view'){activeView = btn.dataset.target; render();}
+  if(action === 'save-remote-url'){const input = document.querySelector('[data-remote-url]'); setRemoteUrl(input ? input.value : ''); setSyncStatus('Cloud endpoint saved'); render();}
+  if(action === 'pull-cloud'){pullFromCloud(); return;}
+  if(action === 'push-cloud'){pushToCloud(); return;}
   if(action === 'export-json'){const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'project-13-22-data.json'; a.click(); URL.revokeObjectURL(url); setSaveStatus('Exported JSON backup');}
   if(action === 'import-json'){document.getElementById('importFile').click();}
   if(action === 'reset-app'){if(!confirm('Reset everything back to the spreadsheet seed data?')) return; state = clone(SEED_DATA); saveState('Reset complete'); render();}
@@ -221,6 +280,7 @@ document.getElementById('importFile').addEventListener('change', async (e) => {
   e.target.value = '';
 });
 render();
+setSyncStatus();
 </script>
 </body>
 </html>
