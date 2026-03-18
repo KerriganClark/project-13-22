@@ -202,8 +202,6 @@ function overallProgress(){const tasks = tasksFlat();if(!tasks.length) return 0;
 function counts(){const tasks = tasksFlat();return {total: tasks.length,complete: tasks.filter(t => String(t.status).toLowerCase() === 'complete').length,progress: tasks.filter(t => String(t.status).toLowerCase() === 'in progress').length,hold: tasks.filter(t => String(t.status).toLowerCase() === 'on hold').length,todo: tasks.filter(t => !['complete','in progress','on hold'].includes(String(t.status).toLowerCase())).length,};}
 function nextMilestone(){const tasks = tasksFlat().filter(t => String(t.status).toLowerCase() !== 'complete' && t.startDate).sort((a,b) => (a.startDate || '').localeCompare(b.startDate || ''));return tasks[0] || null;}
 function daysBetween(a,b){const one = new Date(a), two = new Date(b);return Math.round((two - one)/(1000*60*60*24));}
-function timelineBounds(){const tasks = tasksFlat().filter(t => t.startDate);if(!tasks.length) return null;const starts = tasks.map(t => t.startDate).sort();const ends = tasks.map(t => t.endDate || t.startDate).sort();return { min: starts[0], max: ends[ends.length-1] };}
-function timelineStyle(task){const bounds = timelineBounds();if(!bounds || !task.startDate) return 'width:0';const total = Math.max(1, daysBetween(bounds.min, bounds.max) + 1);const start = Math.max(0, daysBetween(bounds.min, task.startDate));const endDate = task.endDate || task.startDate;const span = Math.max(1, daysBetween(task.startDate, endDate) + 1);const left = (start / total) * 100;const width = (span / total) * 100;return `left:${left}%;width:${Math.max(width,3)}%`;}
 function render(){
   const app = document.getElementById('app');const stats = counts();const next = nextMilestone();const progress = overallProgress();const landCount = state.landParcels.length;
   app.innerHTML = `
@@ -220,9 +218,9 @@ function render(){
       <aside class="hero-side card">
         <div class="panel-head"><h2>Command Center</h2><span class="status-indicator" data-save-status>All changes saved locally</span></div>
         <div class="stack">
-          <div class="mini"><h3>Primary Goal</h3><div class="small">Buy land, divide it wisely, and build two homes with clarity on ownership, budget, timeline, and next decisions.</div></div>
+          <div class="mini"><h3>Primary Goal</h3><div class="small">Buy land, divide it wisely, and build two homes with clarity on ownership, budget, phases, and next decisions.</div></div>
           <div class="mini"><h3>Next milestone</h3><div class="value" style="font-size:20px">${next ? safe(next.taskName) : 'No open milestone'}</div><div class="small muted">${next ? `${safe(next.phase)} • ${safe(next.startDate || 'No date')}` : 'Add more tasks to keep momentum visible.'}</div></div>
-          <div class="mini"><h3>What this app handles</h3><div class="pill-row"><span class="pill">Timeline</span><span class="pill">Land scoring</span><span class="pill">Budget split</span><span class="pill">Ownership notes</span><span class="pill">Parking lot</span><span class="pill">Checklist tracking</span></div></div>
+          <div class="mini"><h3>What this app handles</h3><div class="pill-row"><span class="pill">Task planning</span><span class="pill">Land scoring</span><span class="pill">Budget split</span><span class="pill">Ownership notes</span><span class="pill">Parking lot</span><span class="pill">Checklist tracking</span></div></div>
         </div>
       </aside>
     </section>
@@ -234,8 +232,8 @@ function render(){
         <button data-action="add-parking">+ Add Parking Lot Item</button>
       </div>
       <div class="toolbar-right">
-        <button class="ghost" data-action="pull-cloud">Pull Cloud</button>
-        <button class="ghost" data-action="push-cloud">Push Cloud</button>
+        <button class="ghost" data-action="pull-cloud">Refresh</button>
+        <button class="ghost" data-action="push-cloud">Save</button>
         <button class="ghost" data-action="export-json">Export JSON</button>
         <button class="ghost" data-action="import-json">Import JSON</button>
         <button class="danger" data-action="reset-app">Reset to Spreadsheet Seed</button>
@@ -245,14 +243,14 @@ function render(){
       <div class="panel-head" style="margin-bottom:0"><h3>Cloud Sync</h3><span class="sync-pill" data-sync-status>${'${remoteUrl() ? "Cloud endpoint connected" : "No cloud endpoint yet"}'}</span></div>
       <div class="sync-grid">
         <div class="sync-input" style="display:flex;align-items:center;opacity:.82">Shared cloud endpoint is built into this app</div>
-        <button data-action="pull-cloud">Pull Cloud</button>
-        <button class="primary" data-action="push-cloud">Push Cloud</button>
+        <button data-action="pull-cloud">Refresh</button>
+        <button class="primary" data-action="push-cloud">Save</button>
       </div>
-      <div class="subtle">Shared sync is built in. This version auto-pulls on load and auto-pushes shortly after edits. Manual Pull Cloud and Push Cloud still work anytime.</div>
+      <div class="subtle">Shared sync is built in. This version auto-pulls on load and auto-pushes shortly after edits. Manual Refresh and Save still work anytime.</div>
     </div>
-    <div class="tabs">${['dashboard','timeline','land','budget','ownership','notes'].map(v => `<button class="tab ${activeView===v?'active':''}" data-view="${v}">${titleCase(v)}</button>`).join('')}</div>
+    <div class="tabs">${['dashboard','tasks','land','budget','ownership','notes'].map(v => `<button class="tab ${activeView===v?'active':''}" data-view="${v}">${titleCase(v)}</button>`).join('')}</div>
     <section class="view ${activeView==='dashboard'?'active':''}" id="view-dashboard">${renderDashboard(progress, stats, next, landCount)}</section>
-    <section class="view ${activeView==='timeline'?'active':''}" id="view-timeline">${renderTimeline()}</section>
+    <section class="view ${activeView==='tasks'?'active':''}" id="view-tasks">${renderTasks()}</section>
     <section class="view ${activeView==='land'?'active':''}" id="view-land">${renderLand()}</section>
     <section class="view ${activeView==='budget'?'active':''}" id="view-budget">${renderBudget()}</section>
     <section class="view ${activeView==='ownership'?'active':''}" id="view-ownership">${renderOwnership()}</section>
@@ -261,8 +259,8 @@ function render(){
   bindEvents();
 }
 function renderDashboard(progress, stats, next, landCount){
-  const urgent = tasksFlat().filter(t => ['high'].includes(String(t.priority).toLowerCase()) && String(t.status).toLowerCase() !== 'complete');
-  const visibleUrgent = filterItems(urgent, t => `${t.taskName} ${t.description} ${t.assignee} ${t.phase}`);
+  const openItems = tasksFlat().filter(t => String(t.status).toLowerCase() !== 'complete');
+  const visibleUrgent = filterItems(openItems, t => `${t.taskName} ${t.description} ${t.assignee} ${t.phase}`);
   return `
     <div class="kpi-grid">
       <div class="kpi card"><div class="label">Overall progress</div><div class="number">${progress}%</div><div class="sub">Across ${stats.total} tracked tasks</div></div>
@@ -295,9 +293,9 @@ function renderDashboard(progress, stats, next, landCount){
     </div>
     <div class="dashboard-grid" style="margin-top:16px">
       <div class="card section">
-        <div class="panel-head"><h2>Priority Focus</h2><button data-action="jump-view" data-target="timeline">Open timeline</button></div>
+        <div class="panel-head"><h2>Open Items</h2><button data-action="jump-view" data-target="tasks">Open tasks</button></div>
         <div class="task-list">
-          ${visibleUrgent.length ? visibleUrgent.slice(0,6).map((t) => `<div class="task-item"><span class="dot ${statusDot(t.status)}"></span><div><div><strong>${safe(t.taskName)}</strong></div><div class="small muted">${safe(t.phase)} • ${safe(t.assignee || 'Unassigned')}</div></div><div class="badge">${safe(t.priority || 'Medium')}</div></div>`).join('') : `<div class="empty">No high-priority open items match the current filter.</div>`}
+          ${visibleUrgent.length ? visibleUrgent.slice(0,6).map((t) => `<div class="task-item"><span class="dot ${statusDot(t.status)}"></span><div><div><strong>${safe(t.taskName)}</strong></div><div class="small muted">${safe(t.phase)} • ${safe(t.assignee || 'Unassigned')}</div></div><div class="small muted">${safe(t.startDate || 'No date')}</div></div>`).join('') : `<div class="empty">No open items match the current filter.</div>`}
         </div>
       </div>
       <div class="card section">
@@ -310,15 +308,24 @@ function renderDashboard(progress, stats, next, landCount){
       </div>
     </div>`;
 }
-function renderTimeline(){
-  const visiblePhases = filterItems(state.phases, p => `${p.name} ${p.tasks.map(t => `${t.taskName} ${t.description} ${t.assignee}`).join(' ')}`);
-  return visiblePhases.map((phase) => {
-    const originalIndex = state.phases.findIndex(x => x === phase);
-    const phaseProgress = phase.tasks.length ? Math.round(phase.tasks.reduce((sum,t)=>sum+(Number(t.percentDone)||0),0)/phase.tasks.length) : 0;
-    return `<div class="phase-card card"><div class="phase-top"><div><h2 style="margin:0 0 6px">${safe(phase.name)}</h2><div class="phase-stats"><span class="badge">${phase.tasks.length} tasks</span><span class="badge">${phaseProgress}% complete</span></div></div><div class="toolbar-right"><button data-action="add-task" data-phase="${originalIndex}">+ Add Task</button><button class="ghost" data-action="rename-phase" data-phase="${originalIndex}">Rename</button></div></div><div class="table-wrap"><table><thead><tr><th>Status</th><th>Priority</th><th>Task</th><th>Assignee</th><th>Start</th><th>End</th><th>Progress</th><th>Timeline</th><th>Description</th><th></th></tr></thead><tbody>${phase.tasks.map((task, tIdx) => renderTaskRow(task, originalIndex, tIdx)).join('') || `<tr><td colspan="10"><div class="empty">No tasks yet.</div></td></tr>`}</tbody></table></div></div>`;
-  }).join('') || `<div class="empty card section">No phases match the current filter.</div>`;
+function renderTasks(){
+  const visiblePhases = filterItems(state.phases, p => `${p.name} ${p.tasks.map(t => `${t.taskName} ${t.description} ${t.assignee} ${t.status}`).join(' ')}`);
+  return `
+    <div class="stack">
+      <div class="panel card">
+        <div class="panel-head"><h2>Task Plan</h2><div class="toolbar-right"><button data-action="add-phase">+ Add Phase</button></div></div>
+        <div class="subtle">This view keeps tasks simple: status, owner, dates, and notes. Priority, progress bars, and timeline visuals have been removed.</div>
+      </div>
+      ${visiblePhases.map((phase) => {
+        const originalIndex = state.phases.indexOf(phase);
+        const openCount = phase.tasks.filter(t => String(t.status).toLowerCase() !== 'complete').length;
+        return `<div class="phase-card card"><div class="phase-top"><div><h2 style="margin:0 0 6px">${safe(phase.name)}</h2><div class="phase-stats"><span class="badge">${phase.tasks.length} tasks</span><span class="badge">${openCount} open</span></div></div><div class="toolbar-right"><button data-action="add-task" data-phase="${originalIndex}">+ Add Task</button><button class="ghost" data-action="rename-phase" data-phase="${originalIndex}">Rename</button></div></div><div class="table-wrap"><table><thead><tr><th>Status</th><th>Task</th><th>Owner</th><th>Start</th><th>Target</th><th>Description</th><th></th></tr></thead><tbody>${phase.tasks.map((task, tIdx) => renderTaskRow(task, originalIndex, tIdx)).join('') || `<tr><td colspan="7"><div class="empty">No tasks yet.</div></td></tr>`}</tbody></table></div></div>`;
+      }).join('') || `<div class="empty card">No phases match your current search.</div>`}
+    </div>`;
 }
-function renderTaskRow(task, pIdx, tIdx){return `<tr><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.status">${safe(task.status || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.priority">${safe(task.priority || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.taskName"><strong>${safe(task.taskName || '')}</strong></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.assignee">${safe(task.assignee || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.startDate">${safe(task.startDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.endDate">${safe(task.endDate || '')}</td><td><div class="editable small" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.percentDone">${safe(task.percentDone ?? 0)}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(0, Math.min(100, Number(task.percentDone)||0))}%"></div></div></td><td><div class="timeline-bar"><div class="timeline-range" style="${timelineStyle(task)}"></div></div></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.description">${safe(task.description || '')}</td><td><button data-action="delete-task" data-phase="${pIdx}" data-task="${tIdx}">Delete</button></td></tr>`;}
+
+function renderTaskRow(task, pIdx, tIdx){return `<tr><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.status">${safe(task.status || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.taskName"><strong>${safe(task.taskName || '')}</strong></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.assignee">${safe(task.assignee || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.startDate">${safe(task.startDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.endDate">${safe(task.endDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.description">${safe(task.description || '')}</td><td><button data-action="delete-task" data-phase="${pIdx}" data-task="${tIdx}">Delete</button></td></tr>`;}
+
 function renderLand(){
   const parcels = filterItems(state.landParcels, p => Object.values(p).join(' '));
   return `<div class="land-grid"><div class="card section"><div class="panel-head"><h2>Land Comparison Board</h2><button data-action="add-parcel">+ Add Parcel</button></div><div class="stack">${parcels.length ? parcels.map((parcel) => {const originalIndex = state.landParcels.findIndex(x => x === parcel);return `<div class="parcel-card"><div class="parcel-head"><div style="flex:1"><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.name"><strong>${safe(parcel.name || 'Unnamed Parcel')}</strong></div><div class="small muted editable" contenteditable="true" data-bind="landParcels.${originalIndex}.location">${safe(parcel.location || 'County / address')}</div></div><div class="score editable" contenteditable="true" data-bind="landParcels.${originalIndex}.score">${safe(parcel.score || '0')}</div></div><div class="two-col"><div class="note-pill"><div class="subtle">Asking price</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.price">${safe(parcel.price || '')}</div></div><div class="note-pill"><div class="subtle">Acreage</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.acres">${safe(parcel.acres || '')}</div></div><div class="note-pill"><div class="subtle">Utilities</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.utilities">${safe(parcel.utilities || '')}</div></div><div class="note-pill"><div class="subtle">Septic / perk</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.septic">${safe(parcel.septic || '')}</div></div></div><div class="note-pill"><div class="subtle">Notes</div><div class="editable" contenteditable="true" data-bind="landParcels.${originalIndex}.notes">${safe(parcel.notes || '')}</div></div><div><button data-action="delete-parcel" data-parcel="${originalIndex}">Delete Parcel</button></div></div>`;}).join('') : `<div class="empty">No parcels added yet. Start comparing listings here.</div>`}</div></div><div class="card section"><div class="panel-head"><h2>Requirements</h2><span class="badge">Editable</span></div><div class="req-grid">${state.requirements.map((req, idx) => `<div class="req-item"><div class="small muted editable" contenteditable="true" data-bind="requirements.${idx}.category">${safe(req.category)}</div><div class="editable" contenteditable="true" data-bind="requirements.${idx}.requirement"><strong>${safe(req.requirement)}</strong></div><div class="small muted editable" contenteditable="true" data-bind="requirements.${idx}.notes">${safe(req.notes)}</div></div>`).join('')}</div></div></div>`;
@@ -344,9 +351,9 @@ function bindEvents(){
 }
 function handleAction(e){
   const btn = e.currentTarget; const action = btn.dataset.action;
-  if(action === 'add-phase'){const name = prompt('Phase name?', `Week ${state.phases.length + 1} — New Phase`); if(!name) return; state.phases.push({name, tasks:[]}); saveState('Phase added'); activeView = 'timeline'; render();}
+  if(action === 'add-phase'){const name = prompt('Phase name?', `Week ${state.phases.length + 1} — New Phase`); if(!name) return; state.phases.push({name, tasks:[]}); saveState('Phase added'); activeView = 'tasks'; render();}
   if(action === 'rename-phase'){const idx = Number(btn.dataset.phase); const name = prompt('Rename phase', state.phases[idx].name); if(!name) return; state.phases[idx].name = name; saveState('Phase renamed'); render();}
-  if(action === 'add-task'){const phase = Number(btn.dataset.phase); state.phases[phase].tasks.push({status:'Not Started', priority:'Medium', taskName:'New task', assignee:'', startDate:'', endDate:'', percentDone:0, description:''}); saveState('Task added'); render();}
+  if(action === 'add-task'){const phase = Number(btn.dataset.phase); state.phases[phase].tasks.push({status:'Not Started', taskName:'New task', assignee:'', startDate:'', endDate:'', description:''}); saveState('Task added'); render();}
   if(action === 'delete-task'){const phase = Number(btn.dataset.phase), task = Number(btn.dataset.task); state.phases[phase].tasks.splice(task,1); saveState('Task deleted'); render();}
   if(action === 'add-parcel'){state.landParcels.push({name:'New parcel', location:'', score:'0', price:'', acres:'', utilities:'', septic:'', notes:''}); saveState('Parcel added'); activeView = 'land'; render();}
   if(action === 'delete-parcel'){state.landParcels.splice(Number(btn.dataset.parcel),1); saveState('Parcel deleted'); render();}
