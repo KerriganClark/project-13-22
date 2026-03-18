@@ -6,7 +6,7 @@
   <title>Project 13:22 Master Planner</title>
   <style>
     :root{
-      --bg:#d9dee6;--panel:#eceff4;--panel-2:#e4e8ee;--panel-3:#d7dde6;--text:#1e2633;--muted:#556070;--line:rgba(30,38,51,.14);
+      --bg:#c8ced7;--panel:#e6ebf2;--panel-2:#dde3eb;--panel-3:#d3dae4;--text:#1f2733;--muted:#5a6473;--line:rgba(31,39,51,.15);
       --gold:#9d7a44;--green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#4f79c7;--shadow:0 10px 26px rgba(15,23,42,.08);--radius:22px;--radius-sm:14px;
       --font: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
@@ -17,13 +17,13 @@
       background:
         radial-gradient(circle at top right, rgba(79,121,199,.08), transparent 24%),
         radial-gradient(circle at top left, rgba(157,122,68,.08), transparent 22%),
-        linear-gradient(180deg,#dfe4eb 0%, #d4dae3 100%);
+        linear-gradient(180deg,#cfd6df 0%, #c4ccd6 100%);
       color:var(--text)
     }
     .app{max-width:1500px;margin:0 auto;padding:24px 20px 60px}
     .hero{display:grid;grid-template-columns:1.3fr .8fr;gap:18px;margin-bottom:18px}
     .card{
-      background:linear-gradient(180deg, rgba(238,242,247,.96), rgba(228,233,240,.96));
+      background:linear-gradient(180deg, rgba(231,236,243,.97), rgba(220,226,235,.97));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -41,12 +41,12 @@
     .hero-side{padding:22px}
     .family-list,.values-list,.notes-list,.check-list{display:grid;gap:10px;padding:0;margin:0;list-style:none}
     .pill-row{display:flex;flex-wrap:wrap;gap:8px}
-    .pill{padding:8px 12px;border-radius:999px;background:#e7ebf2;border:1px solid var(--line);color:#314053;font-size:13px}
+    .pill{padding:8px 12px;border-radius:999px;background:#eff3f8;border:1px solid rgba(31,39,51,.12);color:#314053;font-size:13px}
     .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:18px 0}
     .toolbar-left,.toolbar-right{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     button,.button,input,select,textarea{font:inherit}
     button,.button{
-      background:linear-gradient(180deg,#eceff4,#edf3fb);
+      background:linear-gradient(180deg,#f2f5f9,#e9eef5);
       color:var(--text);
       border:1px solid rgba(22,32,51,.12);
       border-radius:14px;
@@ -56,9 +56,11 @@
       box-shadow:0 4px 12px rgba(15,23,42,.05)
     }
     button:hover,.button:hover{transform:translateY(-1px);border-color:rgba(22,32,51,.2)}
-    button.primary{background:linear-gradient(180deg,#d7ba85,#b38847);color:#fff;border-color:rgba(179,136,71,.4)}
-    .status-indicator{font-size:13px;color:var(--muted);padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#e7ebf1}
-    .search{min-width:260px;background:#fff;color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:14px}
+    button.primary{background:linear-gradient(180deg,#f5f7fa,#e8edf4);color:var(--text);border-color:rgba(31,39,51,.14)}
+    .status-indicator{font-size:13px;color:var(--muted);padding:10px 14px;border-radius:999px;border:1px solid rgba(31,39,51,.12);background:#eef2f7}
+    .search{min-width:260px;background:#eef3f8;color:var(--text);border:1px solid rgba(31,39,51,.12);padding:11px 14px;border-radius:14px}
+    input.field,select.field,textarea.field{width:100%;background:#f2f5f9;color:var(--text);border:1px solid rgba(31,39,51,.12);padding:10px 12px;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+    input.field:focus,select.field:focus,textarea.field:focus{outline:2px solid rgba(79,121,199,.22);border-color:rgba(79,121,199,.24)}
     .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
     .tab{background:#f5f8fd;color:var(--muted)}
     .tab.active{background:linear-gradient(180deg,#eef4ff,#e0ebfb);color:var(--text);border-color:rgba(59,130,246,.18)}
@@ -90,8 +92,8 @@
     .phase-card{padding:18px;margin-bottom:16px}
     .phase-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
     .phase-stats{display:flex;gap:8px;flex-wrap:wrap}
-    .badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#f5f8fd;border:1px solid var(--line);color:#355070}
-    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+    .badge{padding:6px 10px;border-radius:999px;font-size:12px;background:#f1f4f8;border:1px solid rgba(31,39,51,.12);color:#42556f}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#edf2f7}
     table{width:100%;border-collapse:collapse;min-width:1000px}
     th,td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
     th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:#f7faff;position:sticky;top:0;z-index:1}
@@ -144,6 +146,8 @@ const STORAGE_KEY = "project_13_22_master_app_v2";
 const REMOTE_URL_KEY = "project_13_22_remote_url";
 const BAKED_REMOTE_URL = "https://script.google.com/macros/s/AKfycbyvcNoaTuoCzhrLVwiK8jRNep-bEZJu2xItIl0rr7Mk84wQATKchW5AuFXvFLMV_Q65/exec";
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
+const STATUS_OPTIONS = ['Not Started','In Progress','Complete','On Hold'];
+const ASSIGNEE_OPTIONS = ['', 'Kerrigan Clark', 'Kalee Clark', 'Indya Pritchard', 'Parker Pritchard'];
 let state = loadState();
 let activeView = 'dashboard';
 let searchTerm = '';
@@ -153,13 +157,36 @@ let autoPushTimer = null;
 let isDirty = false;
 let isPulling = false;
 let lastPushAt = 0;
-function loadState(){try { const saved = localStorage.getItem(STORAGE_KEY); return saved ? JSON.parse(saved) : clone(SEED_DATA);} catch { return clone(SEED_DATA);} }
-function saveState(label = 'Saved locally'){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));setSaveStatus(label);}
-function setSaveStatus(text){const node = document.querySelector('[data-save-status]');if(node) node.textContent = text;clearTimeout(saveTimer);saveTimer = setTimeout(() => {const later = document.querySelector('[data-save-status]');if(later) later.textContent = remoteUrl() ? 'Local copy saved • cloud sync optional' : 'All changes saved locally';}, 1400);}
+function normalizeState(data){
+  const map = {Kerrigan:'Kerrigan Clark', Kalee:'Kalee Clark', Indya:'Indya Pritchard', Parker:'Parker Pritchard'};
+  (data.phases||[]).forEach(phase => (phase.tasks||[]).forEach(task => {
+    if(map[task.assignee]) task.assignee = map[task.assignee];
+    const s = String(task.status||'').trim().toLowerCase();
+    if(s === 'complete') task.percentDone = 100;
+    else if(s === 'in progress') task.percentDone = 50;
+    else task.percentDone = 0;
+  }));
+  return data;
+}
+function loadState(){try { const saved = localStorage.getItem(STORAGE_KEY); return normalizeState(saved ? JSON.parse(saved) : clone(SEED_DATA));} catch { return normalizeState(clone(SEED_DATA));} }
+function scheduleAutoPush(){
+  if(isPulling) return;
+  isDirty = true;
+  clearTimeout(autoPushTimer);
+  autoPushTimer = setTimeout(() => pushToCloud({silent:true}), 1200);
+}
+function saveState(label = 'Saved locally', options = {}){
+  state = normalizeState(state);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if(!options.skipDirty) isDirty = true;
+  setSaveStatus(label);
+  if(!options.skipAutoPush) scheduleAutoPush();
+}
+function setSaveStatus(text){const node = document.querySelector('[data-save-status]');if(node) node.textContent = text;clearTimeout(saveTimer);saveTimer = setTimeout(() => {const later = document.querySelector('[data-save-status]');if(later) later.textContent = remoteUrl() ? 'Auto-save active' : 'Saved locally';}, 1400);}
 function remoteUrl(){return (localStorage.getItem(REMOTE_URL_KEY) || BAKED_REMOTE_URL || '').trim();}
 function setRemoteUrl(url){localStorage.setItem(REMOTE_URL_KEY, (url || BAKED_REMOTE_URL || '').trim());}
 function setSyncStatus(text){const node = document.querySelector('[data-sync-status]');if(node) node.textContent = text || (remoteUrl() ? 'Cloud endpoint connected' : 'No cloud endpoint yet');clearTimeout(syncMessageTimer);syncMessageTimer = setTimeout(() => {const later = document.querySelector('[data-sync-status]'); if(later) later.textContent = remoteUrl() ? 'Cloud endpoint connected' : 'No cloud endpoint yet';}, 2200);}
-async function pullFromCloud(){
+async function pullFromCloud(options = {}){
   const url = remoteUrl();
   if(!url){ if(!options.silent) alert('Cloud endpoint is not configured.'); return; }
   try{
@@ -178,7 +205,7 @@ async function pushToCloud(options = {}){
   const url = remoteUrl();
   if(!url){ if(!options.silent) alert('Cloud endpoint is not configured.'); return; }
   try{
-    setSyncStatus(options.silent ? 'Auto-saving to cloud...' : 'Pushing current app state to cloud...');
+    setSyncStatus(options.silent ? 'Auto-saving...' : 'Saving to cloud...');
     await fetch(url, {
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -186,7 +213,7 @@ async function pushToCloud(options = {}){
     });
     lastPushAt = Date.now();
     isDirty = false;
-    setSyncStatus(options.silent ? 'Cloud auto-saved' : 'Cloud updated');
+    setSyncStatus(options.silent ? 'Auto-saved' : 'Saved');
     saveState('Saved locally', {skipAutoPush:true, skipDirty:true});
   }catch(err){
     console.error(err);
@@ -231,13 +258,7 @@ function render(){
         <button data-action="add-parcel">+ Add Land Parcel</button>
         <button data-action="add-parking">+ Add Parking Lot Item</button>
       </div>
-      <div class="toolbar-right">
-        <button class="ghost" data-action="pull-cloud">Refresh</button>
-        <button class="ghost" data-action="push-cloud">Save</button>
-        <button class="ghost" data-action="export-json">Export JSON</button>
-        <button class="ghost" data-action="import-json">Import JSON</button>
-        <button class="danger" data-action="reset-app">Reset to Spreadsheet Seed</button>
-      </div>
+
     </div>
     <div class="sync-panel card">
       <div class="panel-head" style="margin-bottom:0"><h3>Cloud Sync</h3><span class="sync-pill" data-sync-status>${'${remoteUrl() ? "Cloud endpoint connected" : "No cloud endpoint yet"}'}</span></div>
@@ -246,7 +267,7 @@ function render(){
         <button data-action="pull-cloud">Refresh</button>
         <button class="primary" data-action="push-cloud">Save</button>
       </div>
-      <div class="subtle">Shared sync is built in. This version auto-pulls on load and auto-pushes shortly after edits. Manual Refresh and Save still work anytime.</div>
+      <div class="subtle">Shared sync is built in. The app refreshes on load, auto-saves after edits, and still lets you manually refresh or save anytime.</div>
     </div>
     <div class="tabs">${['dashboard','tasks','land','budget','ownership','notes'].map(v => `<button class="tab ${activeView===v?'active':''}" data-view="${v}">${titleCase(v)}</button>`).join('')}</div>
     <section class="view ${activeView==='dashboard'?'active':''}" id="view-dashboard">${renderDashboard(progress, stats, next, landCount)}</section>
@@ -314,7 +335,7 @@ function renderTasks(){
     <div class="stack">
       <div class="panel card">
         <div class="panel-head"><h2>Task Plan</h2><div class="toolbar-right"><button data-action="add-phase">+ Add Phase</button></div></div>
-        <div class="subtle">This view keeps tasks simple: status, owner, dates, and notes. Priority, progress bars, and timeline visuals have been removed.</div>
+        <div class="subtle">This view keeps tasks simple: choose a status, assign an owner from your family dropdown, set dates, and add notes.</div>
       </div>
       ${visiblePhases.map((phase) => {
         const originalIndex = state.phases.indexOf(phase);
@@ -324,7 +345,20 @@ function renderTasks(){
     </div>`;
 }
 
-function renderTaskRow(task, pIdx, tIdx){return `<tr><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.status">${safe(task.status || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.taskName"><strong>${safe(task.taskName || '')}</strong></td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.assignee">${safe(task.assignee || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.startDate">${safe(task.startDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.endDate">${safe(task.endDate || '')}</td><td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.description">${safe(task.description || '')}</td><td><button data-action="delete-task" data-phase="${pIdx}" data-task="${tIdx}">Delete</button></td></tr>`;}
+
+function renderTaskRow(task, pIdx, tIdx){
+  const status = safe(task.status || 'Not Started');
+  const assignee = safe(task.assignee || '');
+  return `<tr>
+    <td><select class="field" data-bind="phases.${pIdx}.tasks.${tIdx}.status">${STATUS_OPTIONS.map(opt => `<option value="${safe(opt)}" ${String(task.status||'').toLowerCase()===opt.toLowerCase()?'selected':''}>${safe(opt)}</option>`).join('')}</select></td>
+    <td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.taskName"><strong>${safe(task.taskName || '')}</strong></td>
+    <td><select class="field" data-bind="phases.${pIdx}.tasks.${tIdx}.assignee">${ASSIGNEE_OPTIONS.map(opt => `<option value="${safe(opt)}" ${(task.assignee||'')===opt?'selected':''}>${safe(opt || 'Unassigned')}</option>`).join('')}</select></td>
+    <td><input class="field" type="date" data-bind="phases.${pIdx}.tasks.${tIdx}.startDate" value="${safe(task.startDate || '')}" /></td>
+    <td><input class="field" type="date" data-bind="phases.${pIdx}.tasks.${tIdx}.endDate" value="${safe(task.endDate || '')}" /></td>
+    <td class="editable" contenteditable="true" data-bind="phases.${pIdx}.tasks.${tIdx}.description">${safe(task.description || '')}</td>
+    <td><button class="ghost" data-action="delete-task" data-phase="${pIdx}" data-task="${tIdx}">Delete</button></td>
+  </tr>`;
+}
 
 function renderLand(){
   const parcels = filterItems(state.landParcels, p => Object.values(p).join(' '));
@@ -340,13 +374,34 @@ function num(v){if(v === null || v === undefined || v === '') return 0; const n 
 function statusDot(status){const s = String(status || '').toLowerCase(); if(s === 'complete') return 'complete'; if(s === 'in progress') return 'progress'; if(s === 'on hold') return 'hold'; return 'todo';}
 function filterItems(items, textFn){if(!searchTerm.trim()) return items; const q = searchTerm.toLowerCase(); return items.filter(item => textFn(item).toLowerCase().includes(q));}
 function setByPath(obj, path, value){const parts = path.split('.'); let current = obj; for(let i=0;i<parts.length-1;i++){current = current[parts[i]];} current[parts[parts.length-1]] = value;}
+
 function bindEvents(){
   document.querySelectorAll('[data-view]').forEach(btn => btn.onclick = () => { activeView = btn.dataset.view; render(); });
-  const search = document.querySelector('[data-search]'); if(search){ search.addEventListener('input', e => { searchTerm = e.target.value; render(); }); }
+  const search = document.querySelector('[data-search]');
+  if(search){ search.addEventListener('input', e => { searchTerm = e.target.value; render(); }); }
+
   document.querySelectorAll('[contenteditable="true"][data-bind]').forEach(node => {
-    node.addEventListener('blur', () => { const val = node.innerText.trim(); setByPath(state, node.dataset.bind, val); saveState('Saved edit'); render(); });
-    node.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.closest('td')){ e.preventDefault(); e.target.blur(); } });
+    node.addEventListener('blur', () => {
+      const val = node.innerText.trim();
+      setByPath(state, node.dataset.bind, val);
+      saveState('Auto-saved');
+      render();
+    });
+    node.addEventListener('keydown', e => {
+      if(e.key === 'Enter' && e.target.closest('td')){ e.preventDefault(); e.target.blur(); }
+    });
   });
+
+  document.querySelectorAll('input[data-bind], select[data-bind], textarea[data-bind]').forEach(node => {
+    const handler = () => {
+      setByPath(state, node.dataset.bind, node.value);
+      saveState('Auto-saved');
+      if(node.tagName === 'SELECT' || node.type === 'date') render();
+    };
+    node.addEventListener('change', handler);
+    node.addEventListener('input', handler);
+  });
+
   document.querySelectorAll('[data-action]').forEach(btn => btn.onclick = handleAction);
 }
 function handleAction(e){
@@ -374,8 +429,11 @@ document.getElementById('importFile').addEventListener('change', async (e) => {
   try { const text = await file.text(); state = JSON.parse(text); saveState('Imported JSON'); render(); } catch(err){ alert('That JSON file could not be imported.'); }
   e.target.value = '';
 });
+window.addEventListener('focus', () => { if(remoteUrl()) pullFromCloud({silent:true}); });
+setInterval(() => { if(isDirty) pushToCloud({silent:true}); }, 15000);
 render();
 setSyncStatus();
+if(remoteUrl()) pullFromCloud({silent:true});
 </script>
 </body>
 </html>
