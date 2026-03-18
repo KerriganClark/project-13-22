@@ -6,8 +6,8 @@
   <title>Project 13:22 Master Planner</title>
   <style>
     :root{
-      --bg:#f4f6fb;--panel:#ffffff;--panel-2:#f8fafd;--panel-3:#eef3fb;--text:#162033;--muted:#5f6f86;--line:rgba(22,32,51,.10);
-      --gold:#b38847;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--shadow:0 14px 40px rgba(15,23,42,.08);--radius:22px;--radius-sm:14px;
+      --bg:#d9dee6;--panel:#eceff4;--panel-2:#e4e8ee;--panel-3:#d7dde6;--text:#1e2633;--muted:#556070;--line:rgba(30,38,51,.14);
+      --gold:#9d7a44;--green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#4f79c7;--shadow:0 10px 26px rgba(15,23,42,.08);--radius:22px;--radius-sm:14px;
       --font: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
     *{box-sizing:border-box}
@@ -15,38 +15,38 @@
       margin:0;
       font-family:var(--font);
       background:
-        radial-gradient(circle at top right, rgba(59,130,246,.10), transparent 22%),
-        radial-gradient(circle at top left, rgba(179,136,71,.10), transparent 20%),
-        linear-gradient(180deg,#f7f9fd 0%, #eef3fb 100%);
+        radial-gradient(circle at top right, rgba(79,121,199,.08), transparent 24%),
+        radial-gradient(circle at top left, rgba(157,122,68,.08), transparent 22%),
+        linear-gradient(180deg,#dfe4eb 0%, #d4dae3 100%);
       color:var(--text)
     }
     .app{max-width:1500px;margin:0 auto;padding:24px 20px 60px}
     .hero{display:grid;grid-template-columns:1.3fr .8fr;gap:18px;margin-bottom:18px}
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(247,250,255,.92));
+      background:linear-gradient(180deg, rgba(238,242,247,.96), rgba(228,233,240,.96));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       backdrop-filter: blur(8px)
     }
     .hero-main{padding:28px 28px 24px;position:relative;overflow:hidden}
-    .hero-main:before{content:"";position:absolute;inset:auto -60px -80px auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(179,136,71,.14), transparent 65%)}
-    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(179,136,71,.08)}
+    .hero-main:before{content:"";position:absolute;inset:auto -60px -80px auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(157,122,68,.10), transparent 65%)}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:rgba(157,122,68,.08)}
     h1{font-size:42px;line-height:1.05;margin:16px 0 12px}
     .subtitle{font-size:17px;line-height:1.7;color:var(--muted);max-width:90%}
     .hero-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
-    .mini{padding:16px 18px;border-radius:18px;background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid var(--line)}
+    .mini{padding:16px 18px;border-radius:18px;background:linear-gradient(180deg,#eef2f7,#e7ebf1);border:1px solid var(--line)}
     .mini h3{margin:0 0 10px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
     .value{font-size:28px;font-weight:700}
     .hero-side{padding:22px}
     .family-list,.values-list,.notes-list,.check-list{display:grid;gap:10px;padding:0;margin:0;list-style:none}
     .pill-row{display:flex;flex-wrap:wrap;gap:8px}
-    .pill{padding:8px 12px;border-radius:999px;background:#f5f8fe;border:1px solid var(--line);color:#29405f;font-size:13px}
+    .pill{padding:8px 12px;border-radius:999px;background:#e7ebf2;border:1px solid var(--line);color:#314053;font-size:13px}
     .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:18px 0}
     .toolbar-left,.toolbar-right{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     button,.button,input,select,textarea{font:inherit}
     button,.button{
-      background:linear-gradient(180deg,#ffffff,#edf3fb);
+      background:linear-gradient(180deg,#eceff4,#edf3fb);
       color:var(--text);
       border:1px solid rgba(22,32,51,.12);
       border-radius:14px;
@@ -57,7 +57,7 @@
     }
     button:hover,.button:hover{transform:translateY(-1px);border-color:rgba(22,32,51,.2)}
     button.primary{background:linear-gradient(180deg,#d7ba85,#b38847);color:#fff;border-color:rgba(179,136,71,.4)}
-    .status-indicator{font-size:13px;color:var(--muted);padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#f8fbff}
+    .status-indicator{font-size:13px;color:var(--muted);padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#e7ebf1}
     .search{min-width:260px;background:#fff;color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:14px}
     .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
     .tab{background:#f5f8fd;color:var(--muted)}
@@ -115,7 +115,7 @@
     .ownership-grid{grid-template-columns:1.05fr .95fr}
     .stack{display:grid;gap:14px}
     .edit-box{width:100%;min-height:110px;background:#fff;color:var(--text);border:1px solid var(--line);border-radius:16px;padding:14px;resize:vertical}
-    .note-pill{padding:12px 14px;border-radius:16px;background:#f8fbff;border:1px solid var(--line)}
+    .note-pill{padding:12px 14px;border-radius:16px;background:#e7ebf1;border:1px solid var(--line)}
     .list-editor li{display:flex;gap:8px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed rgba(22,32,51,.10)}
     .list-editor li:last-child{border-bottom:none}
     .list-editor [contenteditable="true"]{flex:1;min-width:0;padding:4px 6px;border-radius:8px}
